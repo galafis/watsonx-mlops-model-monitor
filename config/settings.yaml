@@ -1,0 +1,69 @@
+# Watsonx MLOps Model Monitor Configuration
+
+watsonx:
+  generation:
+    model_id: "ibm/granite-13b-chat-v2"
+    parameters:
+      max_new_tokens: 512
+      temperature: 0.3
+      top_p: 0.9
+      repetition_penalty: 1.1
+  embedding:
+    model_id: "ibm/slate-125m-english-rtrvr"
+
+training:
+  default_algorithm: "random_forest"
+  test_size: 0.2
+  random_state: 42
+  cross_validation_folds: 5
+
+monitoring:
+  drift:
+    psi_threshold: 0.2            # PSI > 0.2 = significant drift
+    ks_alpha: 0.05                # KS-test significance level
+    kl_threshold: 0.1             # KL-divergence threshold
+    js_threshold: 0.1             # Jensen-Shannon distance threshold
+    check_interval_seconds: 3600  # hourly checks
+    window_size: 1000             # sliding window for drift comparison
+  performance:
+    accuracy_threshold: 0.85
+    f1_threshold: 0.80
+    precision_threshold: 0.80
+    recall_threshold: 0.75
+    window_size: 500
+    degradation_tolerance: 0.05   # alert if metric drops by > 5%
+  fairness:
+    demographic_parity_threshold: 0.1   # max allowed disparity ratio deviation
+    equalized_odds_threshold: 0.1
+    calibration_threshold: 0.1
+    protected_attributes: ["gender", "race", "age_group"]
+
+deployment:
+  strategy: "canary"        # canary | blue_green | shadow
+  canary_weight: 0.1        # 10% traffic to canary
+  shadow_enabled: true
+  rollback_on_drift: true
+  min_samples_before_promote: 500
+
+governance:
+  enabled: true
+  factsheet_auto_generate: true
+  lifecycle_states:
+    - development
+    - staging
+    - production
+    - retired
+  narrative_model: "ibm/granite-13b-chat-v2"
+
+alerting:
+  enabled: true
+  cooldown_seconds: 300     # 5 min cooldown between repeat alerts
+  severity_levels:
+    - info
+    - warning
+    - critical
+  channels:
+    - type: log
+      enabled: true
+    - type: prometheus
+      enabled: true

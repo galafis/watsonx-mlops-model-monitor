@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watsonx-mlops-monitor
+  labels:
+    app: watsonx-mlops-monitor
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: watsonx-mlops-monitor
+  template:
+    metadata:
+      labels:
+        app: watsonx-mlops-monitor
+        version: v1
+    spec:
+      containers:
+        - name: api
+          image: watsonx-mlops-monitor:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: WATSONX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: watsonx-secrets
+                  key: api-key
+            - name: WATSONX_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: watsonx-secrets
+                  key: project-id
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-service:5000"
+            - name: ENVIRONMENT
+              value: "production"
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
