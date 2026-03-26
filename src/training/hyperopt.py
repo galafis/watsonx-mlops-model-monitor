@@ -103,9 +103,7 @@ class HyperparameterOptimizer:
         grid_search.fit(x, y)
 
         best_params = grid_search.best_params_
-        clean_params = {
-            k.replace("classifier__", ""): v for k, v in best_params.items()
-        }
+        clean_params = {k.replace("classifier__", ""): v for k, v in best_params.items()}
 
         logger.info(
             "hyperopt_completed",

@@ -8,14 +8,13 @@ import pytest
 from src.monitoring.drift_detector import (
     DriftDetector,
     DriftReport,
-    DriftResult,
     DriftSeverity,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def detector() -> DriftDetector:
@@ -48,11 +47,15 @@ def shifted_data() -> np.ndarray:
 # DriftDetector.detect — full report
 # ---------------------------------------------------------------------------
 
+
 class TestDriftDetectorNoShift:
     """When reference and production come from the same distribution, no drift is expected."""
 
     def test_no_drift_detected(
-        self, detector: DriftDetector, reference_data: np.ndarray, same_distribution_data: np.ndarray
+        self,
+        detector: DriftDetector,
+        reference_data: np.ndarray,
+        same_distribution_data: np.ndarray,
     ) -> None:
         report = detector.detect(reference_data, same_distribution_data)
         assert isinstance(report, DriftReport)
@@ -60,27 +63,39 @@ class TestDriftDetectorNoShift:
         assert report.n_drifted_features == 0
 
     def test_drift_ratio_is_zero(
-        self, detector: DriftDetector, reference_data: np.ndarray, same_distribution_data: np.ndarray
+        self,
+        detector: DriftDetector,
+        reference_data: np.ndarray,
+        same_distribution_data: np.ndarray,
     ) -> None:
         report = detector.detect(reference_data, same_distribution_data)
         assert report.drift_ratio == pytest.approx(0.0)
 
     def test_feature_count_matches(
-        self, detector: DriftDetector, reference_data: np.ndarray, same_distribution_data: np.ndarray
+        self,
+        detector: DriftDetector,
+        reference_data: np.ndarray,
+        same_distribution_data: np.ndarray,
     ) -> None:
         report = detector.detect(reference_data, same_distribution_data)
         assert report.n_total_features == 3
         assert len(report.feature_results) == 3
 
     def test_psi_is_low(
-        self, detector: DriftDetector, reference_data: np.ndarray, same_distribution_data: np.ndarray
+        self,
+        detector: DriftDetector,
+        reference_data: np.ndarray,
+        same_distribution_data: np.ndarray,
     ) -> None:
         report = detector.detect(reference_data, same_distribution_data)
         for r in report.feature_results:
             assert r.psi < 0.2, f"PSI should be low for stable distribution: got {r.psi}"
 
     def test_severity_none_or_low(
-        self, detector: DriftDetector, reference_data: np.ndarray, same_distribution_data: np.ndarray
+        self,
+        detector: DriftDetector,
+        reference_data: np.ndarray,
+        same_distribution_data: np.ndarray,
     ) -> None:
         report = detector.detect(reference_data, same_distribution_data)
         for r in report.feature_results:
@@ -129,6 +144,7 @@ class TestDriftDetectorWithShift:
 # Individual statistical tests
 # ---------------------------------------------------------------------------
 
+
 class TestPSIComputation:
     """Unit tests for PSI calculation."""
 
@@ -158,7 +174,7 @@ class TestKSTest:
         rng = np.random.RandomState(42)
         a = rng.normal(0, 1, 500)
         b = rng.normal(0, 1, 500)
-        stat, pval = detector._compute_ks_test(a, b)
+        _stat, pval = detector._compute_ks_test(a, b)
         assert pval > 0.05
 
     def test_different_distribution_low_pvalue(self, detector: DriftDetector) -> None:
@@ -199,6 +215,7 @@ class TestKLDivergence:
 # ---------------------------------------------------------------------------
 # Edge cases
 # ---------------------------------------------------------------------------
+
 
 class TestEdgeCases:
     """Edge cases for the drift detector."""

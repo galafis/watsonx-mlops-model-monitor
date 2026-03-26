@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
 import numpy as np
 import pytest
 from sklearn.ensemble import RandomForestClassifier
@@ -14,10 +12,10 @@ from src.serving.ab_router import ABRouter, RoutingConfig, RoutingResult, Routin
 from src.serving.gateway import ModelGateway
 from src.serving.shadow_mode import ShadowComparison, ShadowRunner
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_pipeline(random_state: int = 42) -> Pipeline:
     """Create a simple trained pipeline for testing."""
@@ -25,10 +23,12 @@ def _make_pipeline(random_state: int = 42) -> Pipeline:
     X = rng.randn(100, 3)
     y = (X[:, 0] > 0).astype(int)
 
-    pipeline = Pipeline([
-        ("scaler", StandardScaler()),
-        ("classifier", RandomForestClassifier(n_estimators=10, random_state=random_state)),
-    ])
+    pipeline = Pipeline(
+        [
+            ("scaler", StandardScaler()),
+            ("classifier", RandomForestClassifier(n_estimators=10, random_state=random_state)),
+        ]
+    )
     pipeline.fit(X, y)
     return pipeline
 
@@ -36,6 +36,7 @@ def _make_pipeline(random_state: int = 42) -> Pipeline:
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def pipeline() -> Pipeline:
@@ -65,6 +66,7 @@ def gateway_with_canary(pipeline: Pipeline, pipeline_b: Pipeline) -> ModelGatewa
 # ---------------------------------------------------------------------------
 # ModelGateway tests
 # ---------------------------------------------------------------------------
+
 
 class TestModelGateway:
     """Tests for the ModelGateway class."""
@@ -131,6 +133,7 @@ class TestModelGatewayNumpy:
 # ABRouter tests
 # ---------------------------------------------------------------------------
 
+
 class TestABRouterDirect:
     """Tests for direct routing strategy."""
 
@@ -170,9 +173,7 @@ class TestABRouterCanary:
         assert result.routed_to == "production"
         assert result.strategy == "canary"
 
-    def test_canary_routing_can_use_canary(
-        self, gateway_with_canary: ModelGateway
-    ) -> None:
+    def test_canary_routing_can_use_canary(self, gateway_with_canary: ModelGateway) -> None:
         config = RoutingConfig(
             strategy=RoutingStrategy.CANARY,
             canary_weight=1.0,
@@ -255,6 +256,7 @@ class TestABRouterShadow:
 # ---------------------------------------------------------------------------
 # ShadowRunner tests
 # ---------------------------------------------------------------------------
+
 
 class TestShadowRunner:
     """Tests for the shadow deployment runner."""

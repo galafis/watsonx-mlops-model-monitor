@@ -7,7 +7,6 @@ Fairness and Machine Learning (Barocas, Hardt, Narayanan).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 import numpy as np
 import structlog
@@ -197,17 +196,11 @@ class FairnessMonitor:
 
         # True Positive Rate = TP / (TP + FN) = P(Y_hat=1 | Y=1)
         positives_mask = y_true == 1
-        if positives_mask.sum() > 0:
-            tpr = float(np.mean(y_pred[positives_mask] == 1))
-        else:
-            tpr = 0.0
+        tpr = float(np.mean(y_pred[positives_mask] == 1)) if positives_mask.sum() > 0 else 0.0
 
         # False Positive Rate = FP / (FP + TN) = P(Y_hat=1 | Y=0)
         negatives_mask = y_true == 0
-        if negatives_mask.sum() > 0:
-            fpr = float(np.mean(y_pred[negatives_mask] == 1))
-        else:
-            fpr = 0.0
+        fpr = float(np.mean(y_pred[negatives_mask] == 1)) if negatives_mask.sum() > 0 else 0.0
 
         # Positive Predictive Value = TP / (TP + FP) = P(Y=1 | Y_hat=1)
         predicted_positive_mask = y_pred == 1
@@ -226,9 +219,7 @@ class FairnessMonitor:
             calibration_score=ppv,
         )
 
-    def _demographic_parity(
-        self, group_metrics: list[GroupMetrics]
-    ) -> tuple[float, float]:
+    def _demographic_parity(self, group_metrics: list[GroupMetrics]) -> tuple[float, float]:
         """Compute demographic parity difference and ratio.
 
         Demographic parity requires P(Y_hat=1 | A=a) to be equal for all groups.

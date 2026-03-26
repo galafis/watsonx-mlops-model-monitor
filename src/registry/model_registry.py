@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from typing import Any
 
 import mlflow
-from mlflow.tracking import MlflowClient
 import structlog
+from mlflow.tracking import MlflowClient
 
 from src.config import settings
 

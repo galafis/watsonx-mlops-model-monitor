@@ -3,18 +3,17 @@
 from __future__ import annotations
 
 from collections import deque
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any
 
 import numpy as np
+import structlog
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
     precision_score,
     recall_score,
 )
-import structlog
 
 from src.config import settings
 
@@ -87,7 +86,7 @@ class PerformanceTracker:
             y_true: Ground truth labels.
             y_pred: Predicted labels.
         """
-        for yt, yp in zip(y_true, y_pred):
+        for yt, yp in zip(y_true, y_pred, strict=False):
             self._y_true.append(yt)
             self._y_pred.append(yp)
 

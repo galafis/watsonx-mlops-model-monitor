@@ -8,17 +8,17 @@ import numpy as np
 import pytest
 from sklearn.pipeline import Pipeline
 
+from src.training.hyperopt import DEFAULT_PARAM_GRIDS, HyperparameterOptimizer
 from src.training.trainer import (
     ALGORITHM_REGISTRY,
     ModelTrainer,
     TrainingResult,
 )
-from src.training.hyperopt import DEFAULT_PARAM_GRIDS, HyperparameterOptimizer
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def classification_data() -> tuple[np.ndarray, np.ndarray]:
@@ -42,6 +42,7 @@ def multiclass_data() -> tuple[np.ndarray, np.ndarray]:
 # ModelTrainer — basic training
 # ---------------------------------------------------------------------------
 
+
 class TestModelTrainer:
     """Tests for the ModelTrainer class."""
 
@@ -54,7 +55,9 @@ class TestModelTrainer:
         assert isinstance(result.model, Pipeline)
         assert result.algorithm == "random_forest"
 
-    def test_train_logistic_regression(self, classification_data: tuple[np.ndarray, np.ndarray]) -> None:
+    def test_train_logistic_regression(
+        self, classification_data: tuple[np.ndarray, np.ndarray]
+    ) -> None:
         X, y = classification_data
         trainer = ModelTrainer(algorithm="logistic_regression", random_state=42)
         result = trainer.train(X, y)
@@ -62,7 +65,9 @@ class TestModelTrainer:
         assert result.algorithm == "logistic_regression"
         assert result.metrics["accuracy"] > 0.5
 
-    def test_train_gradient_boosting(self, classification_data: tuple[np.ndarray, np.ndarray]) -> None:
+    def test_train_gradient_boosting(
+        self, classification_data: tuple[np.ndarray, np.ndarray]
+    ) -> None:
         X, y = classification_data
         trainer = ModelTrainer(algorithm="gradient_boosting", random_state=42)
         result = trainer.train(X, y)
@@ -91,7 +96,9 @@ class TestModelTrainer:
         assert "roc_auc" in result.metrics
         assert 0.0 <= result.metrics["roc_auc"] <= 1.0
 
-    def test_cross_validation_scores(self, classification_data: tuple[np.ndarray, np.ndarray]) -> None:
+    def test_cross_validation_scores(
+        self, classification_data: tuple[np.ndarray, np.ndarray]
+    ) -> None:
         X, y = classification_data
         trainer = ModelTrainer(algorithm="random_forest", random_state=42)
         result = trainer.train(X, y)
@@ -107,7 +114,9 @@ class TestModelTrainer:
 
         assert result.feature_names == names
 
-    def test_default_feature_names(self, classification_data: tuple[np.ndarray, np.ndarray]) -> None:
+    def test_default_feature_names(
+        self, classification_data: tuple[np.ndarray, np.ndarray]
+    ) -> None:
         X, y = classification_data
         trainer = ModelTrainer(algorithm="random_forest", random_state=42)
         result = trainer.train(X, y)
@@ -153,10 +162,13 @@ class TestModelTrainerPipeline:
 # HyperparameterOptimizer
 # ---------------------------------------------------------------------------
 
+
 class TestHyperparameterOptimizer:
     """Tests for GridSearchCV hyperparameter optimization."""
 
-    def test_optimize_random_forest(self, classification_data: tuple[np.ndarray, np.ndarray]) -> None:
+    def test_optimize_random_forest(
+        self, classification_data: tuple[np.ndarray, np.ndarray]
+    ) -> None:
         X, y = classification_data
         optimizer = HyperparameterOptimizer(
             algorithm="random_forest",
@@ -172,7 +184,9 @@ class TestHyperparameterOptimizer:
         assert result.algorithm == "random_forest"
         assert result.metrics["accuracy"] > 0.5
 
-    def test_optimize_logistic_regression(self, classification_data: tuple[np.ndarray, np.ndarray]) -> None:
+    def test_optimize_logistic_regression(
+        self, classification_data: tuple[np.ndarray, np.ndarray]
+    ) -> None:
         X, y = classification_data
         optimizer = HyperparameterOptimizer(
             algorithm="logistic_regression",
@@ -208,6 +222,7 @@ class TestHyperparameterOptimizer:
 # ---------------------------------------------------------------------------
 # ExperimentTracker (mocked MLflow)
 # ---------------------------------------------------------------------------
+
 
 class TestExperimentTracker:
     """Tests for MLflow experiment tracking with mocked backend."""

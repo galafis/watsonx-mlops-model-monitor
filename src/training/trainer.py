@@ -148,9 +148,7 @@ class ModelTrainer:
         pipeline.fit(x_train, y_train)
 
         y_pred = pipeline.predict(x_test)
-        y_proba = (
-            pipeline.predict_proba(x_test) if hasattr(pipeline, "predict_proba") else None
-        )
+        y_proba = pipeline.predict_proba(x_test) if hasattr(pipeline, "predict_proba") else None
 
         metrics = self._compute_metrics(y_test, y_pred, y_proba)
 

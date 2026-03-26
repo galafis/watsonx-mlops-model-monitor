@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
@@ -141,9 +141,7 @@ class ABRouter:
         shadow_prediction = None
         if self.gateway.is_loaded(self.config.candidate_model):
             runner = ShadowRunner(self.gateway)
-            shadow_prediction = runner.run_shadow(
-                self.config.candidate_model, features
-            )
+            shadow_prediction = runner.run_shadow(self.config.candidate_model, features)
 
         return RoutingResult(
             prediction=production_prediction,

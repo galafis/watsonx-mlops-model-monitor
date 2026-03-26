@@ -39,9 +39,7 @@ class MLflowSettings(BaseSettings):
     """MLflow tracking server configuration."""
 
     tracking_uri: str = Field(default="http://localhost:5000", alias="MLFLOW_TRACKING_URI")
-    experiment_name: str = Field(
-        default="watsonx-model-monitor", alias="MLFLOW_EXPERIMENT_NAME"
-    )
+    experiment_name: str = Field(default="watsonx-model-monitor", alias="MLFLOW_EXPERIMENT_NAME")
 
 
 class AppSettings(BaseSettings):

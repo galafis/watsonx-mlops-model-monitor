@@ -11,10 +11,10 @@ from enum import Enum
 from typing import Any
 
 import numpy as np
+import structlog
 from scipy import stats
 from scipy.spatial.distance import jensenshannon
 from scipy.special import kl_div
-import structlog
 
 from src.config import settings
 
@@ -160,11 +160,7 @@ class DriftDetector:
         kl = self._compute_kl_divergence(reference, production)
         js = self._compute_js_distance(reference, production)
 
-        is_drifted = (
-            psi > self.psi_threshold
-            or ks_pval < self.ks_alpha
-            or js > self.js_threshold
-        )
+        is_drifted = psi > self.psi_threshold or ks_pval < self.ks_alpha or js > self.js_threshold
 
         severity = self._classify_severity(psi, ks_pval, js)
 
@@ -220,9 +216,7 @@ class DriftDetector:
         stat, pvalue = stats.ks_2samp(reference, production)
         return float(stat), float(pvalue)
 
-    def _compute_kl_divergence(
-        self, reference: np.ndarray, production: np.ndarray
-    ) -> float:
+    def _compute_kl_divergence(self, reference: np.ndarray, production: np.ndarray) -> float:
         """Compute KL-divergence D_KL(production || reference).
 
         Uses histogram-based probability estimation with Laplace smoothing.
@@ -243,9 +237,7 @@ class DriftDetector:
         kl_values = kl_div(prod_dist, ref_dist)
         return float(np.sum(kl_values))
 
-    def _compute_js_distance(
-        self, reference: np.ndarray, production: np.ndarray
-    ) -> float:
+    def _compute_js_distance(self, reference: np.ndarray, production: np.ndarray) -> float:
         """Compute Jensen-Shannon distance (symmetric KL variant).
 
         Uses scipy.spatial.distance.jensenshannon which returns the
@@ -266,9 +258,7 @@ class DriftDetector:
 
         return float(jensenshannon(ref_dist, prod_dist))
 
-    def _classify_severity(
-        self, psi: float, ks_pvalue: float, js: float
-    ) -> DriftSeverity:
+    def _classify_severity(self, psi: float, ks_pvalue: float, js: float) -> DriftSeverity:
         """Classify drift severity based on combined test results."""
         if psi > self.psi_threshold * 2 or js > self.js_threshold * 2:
             return DriftSeverity.HIGH

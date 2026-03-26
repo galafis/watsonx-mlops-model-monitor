@@ -9,10 +9,10 @@ import pytest
 from src.registry.model_registry import ModelRegistry, ModelVersion
 from src.registry.versioning import VersionComparison, VersionManager
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def mock_mlflow_client() -> MagicMock:
@@ -24,6 +24,7 @@ def mock_mlflow_client() -> MagicMock:
 # ---------------------------------------------------------------------------
 # ModelRegistry tests (all MLflow calls mocked)
 # ---------------------------------------------------------------------------
+
 
 class TestModelRegistry:
     """Tests for ModelRegistry with mocked MLflow."""
@@ -52,9 +53,7 @@ class TestModelRegistry:
         assert version.description == "Initial model"
         assert version.tags == {"team": "ml"}
 
-        mock_mlflow.register_model.assert_called_once_with(
-            "runs:/run-abc-123/model", "credit_risk"
-        )
+        mock_mlflow.register_model.assert_called_once_with("runs:/run-abc-123/model", "credit_risk")
 
     @patch("src.registry.model_registry.mlflow")
     @patch("src.registry.model_registry.MlflowClient")
@@ -77,9 +76,7 @@ class TestModelRegistry:
 
     @patch("src.registry.model_registry.mlflow")
     @patch("src.registry.model_registry.MlflowClient")
-    def test_transition_stage(
-        self, mock_client_cls: MagicMock, mock_mlflow: MagicMock
-    ) -> None:
+    def test_transition_stage(self, mock_client_cls: MagicMock, mock_mlflow: MagicMock) -> None:
         mock_response = MagicMock()
         mock_response.current_stage = "Production"
 
@@ -98,9 +95,7 @@ class TestModelRegistry:
 
     @patch("src.registry.model_registry.mlflow")
     @patch("src.registry.model_registry.MlflowClient")
-    def test_list_versions(
-        self, mock_client_cls: MagicMock, mock_mlflow: MagicMock
-    ) -> None:
+    def test_list_versions(self, mock_client_cls: MagicMock, mock_mlflow: MagicMock) -> None:
         v1 = MagicMock()
         v1.name = "model"
         v1.version = "1"
@@ -131,9 +126,7 @@ class TestModelRegistry:
 
     @patch("src.registry.model_registry.mlflow")
     @patch("src.registry.model_registry.MlflowClient")
-    def test_get_production_model(
-        self, mock_client_cls: MagicMock, mock_mlflow: MagicMock
-    ) -> None:
+    def test_get_production_model(self, mock_client_cls: MagicMock, mock_mlflow: MagicMock) -> None:
         mock_version = MagicMock()
         mock_version.version = "3"
 
@@ -161,9 +154,7 @@ class TestModelRegistry:
 
     @patch("src.registry.model_registry.mlflow")
     @patch("src.registry.model_registry.MlflowClient")
-    def test_get_model_by_version(
-        self, mock_client_cls: MagicMock, mock_mlflow: MagicMock
-    ) -> None:
+    def test_get_model_by_version(self, mock_client_cls: MagicMock, mock_mlflow: MagicMock) -> None:
         mock_model = MagicMock()
         mock_mlflow.sklearn.load_model.return_value = mock_model
 
@@ -177,6 +168,7 @@ class TestModelRegistry:
 # ---------------------------------------------------------------------------
 # VersionManager tests
 # ---------------------------------------------------------------------------
+
 
 class TestVersionManager:
     """Tests for model version comparison and promotion logic."""
@@ -298,6 +290,7 @@ class TestVersionManager:
 # ---------------------------------------------------------------------------
 # ModelVersion dataclass
 # ---------------------------------------------------------------------------
+
 
 class TestModelVersionDataclass:
     """Tests for the ModelVersion dataclass."""

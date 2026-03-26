@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -110,7 +109,7 @@ class ShadowRunner:
         features: list[list[float]] | np.ndarray,
     ) -> None:
         """Record agreement/divergence between production and shadow predictions."""
-        for i, (prod, shadow) in enumerate(zip(production_preds, shadow_preds)):
+        for i, (prod, shadow) in enumerate(zip(production_preds, shadow_preds, strict=False)):
             self._comparison.total_requests += 1
             if prod == shadow:
                 self._comparison.agreement_count += 1

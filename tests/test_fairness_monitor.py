@@ -8,14 +8,13 @@ import pytest
 from src.monitoring.fairness_monitor import (
     FairnessMonitor,
     FairnessReport,
-    FairnessResult,
     GroupMetrics,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def monitor() -> FairnessMonitor:
@@ -57,6 +56,7 @@ def unfair_scenario() -> tuple[np.ndarray, np.ndarray, dict[str, np.ndarray]]:
 # Fair scenario tests
 # ---------------------------------------------------------------------------
 
+
 class TestFairScenario:
     """When the model treats groups equally, no violations should be raised."""
 
@@ -93,6 +93,7 @@ class TestFairScenario:
 # ---------------------------------------------------------------------------
 # Unfair scenario tests
 # ---------------------------------------------------------------------------
+
 
 class TestUnfairScenario:
     """When the model is biased, violations must be detected."""
@@ -140,6 +141,7 @@ class TestUnfairScenario:
 # GroupMetrics computation
 # ---------------------------------------------------------------------------
 
+
 class TestGroupMetrics:
     """Test individual group metric calculations."""
 
@@ -183,6 +185,7 @@ class TestGroupMetrics:
 # ---------------------------------------------------------------------------
 # Metric computation methods
 # ---------------------------------------------------------------------------
+
 
 class TestDemographicParity:
     """Tests for demographic parity calculation."""
@@ -255,6 +258,7 @@ class TestCalibrationDifference:
 # ---------------------------------------------------------------------------
 # Multiple protected attributes
 # ---------------------------------------------------------------------------
+
 
 class TestMultipleAttributes:
     """Test evaluation with multiple protected attributes."""
