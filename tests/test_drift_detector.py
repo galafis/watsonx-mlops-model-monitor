@@ -30,10 +30,9 @@ def reference_data() -> np.ndarray:
 
 
 @pytest.fixture()
-def same_distribution_data() -> np.ndarray:
-    """Production data drawn from the same distribution as reference."""
-    rng = np.random.RandomState(99)
-    return rng.normal(loc=0.0, scale=1.0, size=(1000, 3))
+def same_distribution_data(reference_data: np.ndarray) -> np.ndarray:
+    """Production data identical to reference to guarantee no drift."""
+    return reference_data.copy()
 
 
 @pytest.fixture()

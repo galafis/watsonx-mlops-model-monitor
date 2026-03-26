@@ -205,7 +205,7 @@ class TestVersionManager:
             archive_existing=True,
         )
 
-    @patch("src.registry.versioning.ExperimentTracker")
+    @patch("src.training.experiment.ExperimentTracker")
     @patch("src.registry.versioning.ModelRegistry")
     def test_compare_versions_should_promote(
         self, mock_registry_cls: MagicMock, mock_tracker_cls: MagicMock
@@ -243,7 +243,7 @@ class TestVersionManager:
         assert comparison.candidate_version == 3
         assert comparison.production_version == 2
 
-    @patch("src.registry.versioning.ExperimentTracker")
+    @patch("src.training.experiment.ExperimentTracker")
     @patch("src.registry.versioning.ModelRegistry")
     def test_compare_versions_should_not_promote(
         self, mock_registry_cls: MagicMock, mock_tracker_cls: MagicMock

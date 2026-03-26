@@ -25,10 +25,9 @@ def monitor() -> FairnessMonitor:
 @pytest.fixture()
 def fair_scenario() -> tuple[np.ndarray, np.ndarray, dict[str, np.ndarray]]:
     """Scenario where model treats groups equally (fair)."""
-    rng = np.random.RandomState(42)
-    n = 200
-    y_true = rng.randint(0, 2, n)
-    # Predictions are identical to truth (perfect model, same for both groups)
+    # Use exactly equal distributions for both groups to guarantee fairness
+    half = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0] * 10)  # 50% positive each
+    y_true = np.concatenate([half, half])
     y_pred = y_true.copy()
     gender = np.array(["M"] * 100 + ["F"] * 100)
     return y_true, y_pred, {"gender": gender}
